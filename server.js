@@ -37,7 +37,7 @@ app.get('/api/payloads', (req, res) => {
   }
 });
 
-// Servir les fichiers payload directement pour chargement sur PS4
+// Servir les fichiers payload directement
 app.get('/payloads/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(PAYLOADS_DIR, filename);
@@ -46,7 +46,7 @@ app.get('/payloads/:filename', (req, res) => {
     return res.status(404).json({ error: 'Fichier non trouvé' });
   }
   
-  res.download(filePath);
+  res.sendFile(filePath);
 });
 
 // Démarrage du serveur

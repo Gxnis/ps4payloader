@@ -1,14 +1,13 @@
 # PS4 Payload Loader
 
-Interface web pour lancer des payloads PS4 (.bin) en un clic depuis votre PlayStation 4.
+Interface web simple pour lancer des payloads PS4 (.bin) depuis votre PlayStation 4.
 
 ## 🎮 Fonctionnalités
 
-- ✅ Liste des payloads disponibles avec informations (taille, date)
-- ✅ Lancement en un clic depuis le navigateur PS4
+- ✅ Liste des payloads disponibles
+- ✅ Lancement direct depuis le navigateur PS4
 - ✅ Compatible GoldHen 2.4.18b - Firmware 9.50
-- ✅ Interface moderne et responsive
-- ✅ Aucune installation nécessaire - les payloads sont sur le site
+- ✅ Simple et efficace - pas de configuration complexe
 
 ## 🚀 Déploiement sur Render
 

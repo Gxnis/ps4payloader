@@ -42,20 +42,12 @@ function displayPayloads() {
     `).join('');
 }
 
-// Lancer un payload (méthode standard PS4)
+// Lancer un payload (méthode simple directe)
 function launchPayload(filename) {
-    // Méthode standard: lien direct vers le fichier .bin
-    // Le navigateur PS4 télécharge et exécute automatiquement
     const payloadUrl = `/payloads/${encodeURIComponent(filename)}`;
     
-    // Créer un lien invisible et cliquer dessus
-    const link = document.createElement('a');
-    link.href = payloadUrl;
-    link.download = filename;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Méthode simple: redirection directe
+    window.location.href = payloadUrl;
     
     showNotification(`🚀 ${filename} lancé!`, 'success');
 }
