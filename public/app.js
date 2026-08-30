@@ -1,53 +1,12 @@
 // Variables globales
 let payloads = [];
+let ps4Ip = localStorage.getItem('ps4Ip') || '';
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     loadPayloads();
+    document.getElementById('ps4Ip').value = ps4Ip;
 });
-
-// Vérifier la compatibilité GoldHen
-function checkGoldHenCompatibility() {
-    const statusElement = document.getElementById('goldHenStatus');
-    
-    if (typeof GoldHen !== 'undefined') {
-        const version = GoldHen.version || 'version inconnue';
-        console.log('GoldHen détecté:', version);
-        statusElement.textContent = `✅ GoldHen ${version} détecté - Notifications PS4 activées`;
-        statusElement.style.color = '#00ff88';
-        statusElement.style.borderColor = '#00ff88';
-        statusElement.style.background = 'rgba(0, 255, 136, 0.1)';
-        sendPs4Notification('🎮 PS4 Payload Loader chargé');
-    } else {
-        console.log('GoldHen non détecté, utilisation du mode fallback');
-        statusElement.textContent = '⚠️ GoldHen non détecté - Mode fallback activé';
-        statusElement.style.color = '#ffaa00';
-        statusElement.style.borderColor = '#ffaa00';
-        statusElement.style.background = 'rgba(255, 170, 0, 0.1)';
-    }
-}
-
-// Envoyer une notification PS4 via GoldHen
-function sendPs4Notification(message) {
-    try {
-        if (typeof GoldHen !== 'undefined' && GoldHen.sendNotification) {
-            GoldHen.sendNotification(message);
-            return true;
-        } else if (typeof GoldHen !== 'undefined' && GoldHen.showNotification) {
-            // Alternative pour certaines versions de GoldHen
-            GoldHen.showNotification(message);
-            return true;
-        } else {
-            // Fallback: notification du site
-            showNotification(message, 'info');
-            return false;
-        }
-    } catch (error) {
-        console.log('Erreur notification GoldHen:', error);
-        showNotification(message, 'info');
-        return false;
-    }
-}
 
 // Charger la liste des payloads
 async function loadPayloads() {
@@ -55,7 +14,6 @@ async function loadPayloads() {
         const response = await fetch('/api/payloads');
         payloads = await response.json();
         displayPayloads();
-        checkGoldHenCompatibility();
     } catch (error) {
         showNotification('Erreur lors du chargement des payloads', 'error');
     }
@@ -86,108 +44,87 @@ function displayPayloads() {
     `).join('');
 }
 
-// Lancer un payload directement sur PS4 avec GoldHen 2.4.18b FW 9.50
+// Lancer un payload sur PS4 via le serveur
 async function launchPayload(filename) {
+    if (!ps4Ip) {
+        showNotification('Veuillez configurer l\'adresse IP de votre PS4', 'error');
+        return;
+    }
+    
     try {
-        sendPs4Notification(`🚀 Lancement de ${filename}...`);
+        showNotification(`Envoi de ${filename} vers ${ps4Ip}...`, 'info');
         
-        const payloadUrl = `/payloads/${encodeURIComponent(filename)}`;
+        const response = await fetch('/api/payloads/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                filename: filename,
+                ps4Ip: ps4Ip
+            })
+        });
         
-        // Méthode spécifique pour GoldHen 2.4.18b FW 9.50
-        if (typeof GoldHen !== 'undefined') {
-            // Essayer différentes méthodes selon la version de GoldHen
-            try {
-                // Méthode 1: loadPayload (GoldHen 2.4.x)
-                if (GoldHen.loadPayload) {
-                    await GoldHen.loadPayload(payloadUrl);
-                    sendPs4Notification(`✅ ${filename} lancé avec succès!`);
-                    return;
-                }
-                
-                // Méthode 2: exec (GoldHen plus ancien)
-                if (GoldHen.exec) {
-                    await GoldHen.exec(payloadUrl);
-                    sendPs4Notification(`✅ ${filename} lancé avec succès!`);
-                    return;
-                }
-                
-                // Méthode 3: run (alternative)
-                if (GoldHen.run) {
-                    await GoldHen.run(payloadUrl);
-                    sendPs4Notification(`✅ ${filename} lancé avec succès!`);
-                    return;
-                }
-                
-                console.log('Méthodes GoldHen non disponibles, fallback vers iframe');
-            } catch (goldhenError) {
-                console.log('Erreur API GoldHen:', goldhenError);
-            }
-        }
+        const result = await response.json();
         
-        // Fallback: Utiliser XMLHttpRequest pour GoldHen 2.4.18b FW 9.50
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', payloadUrl, true);
-            xhr.responseType = 'arraybuffer';
-            
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Pour GoldHen 2.4.18b, essayer d'exécuter le buffer
-                    if (typeof GoldHen !== 'undefined' && GoldHen.executeBuffer) {
-                        try {
-                            GoldHen.executeBuffer(xhr.response);
-                            sendPs4Notification(`✅ ${filename} lancé avec succès!`);
-                        } catch (execError) {
-                            console.log('Erreur executeBuffer:', execError);
-                            // Fallback iframe
-                            loadPayloadViaIframe(payloadUrl, filename);
-                        }
-                    } else {
-                        // Fallback iframe
-                        loadPayloadViaIframe(payloadUrl, filename);
-                    }
-                } else {
-                    sendPs4Notification(`❌ Erreur chargement payload`);
-                }
-            };
-            
-            xhr.onerror = function() {
-                console.log('Erreur XHR, fallback iframe');
-                loadPayloadViaIframe(payloadUrl, filename);
-            };
-            
-            xhr.send();
-            
-        } catch (xhrError) {
-            console.log('Erreur XHR:', xhrError);
-            loadPayloadViaIframe(payloadUrl, filename);
+        if (result.success) {
+            showNotification(`✅ ${filename} envoyé avec succès!`, 'success');
+        } else {
+            throw new Error(result.error || 'Erreur lors de l\'envoi');
         }
         
     } catch (error) {
-        console.log('Erreur générale:', error);
-        sendPs4Notification(`❌ Erreur: ${error.message}`);
+        console.log('Erreur:', error);
+        showNotification(`❌ Erreur: ${error.message}`, 'error');
+        
+        // Fallback: essayer via iframe
+        showNotification('Tentative méthode alternative...', 'info');
+        loadPayloadViaIframe(filename);
     }
 }
 
 // Fallback: Charger payload via iframe
-function loadPayloadViaIframe(url, filename) {
+function loadPayloadViaIframe(filename) {
+    const payloadUrl = `/payloads/${encodeURIComponent(filename)}`;
+    
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    iframe.src = url;
+    iframe.src = payloadUrl;
     
     iframe.onload = () => {
-        sendPs4Notification(`✅ ${filename} lancé!`);
+        showNotification(`✅ ${filename} chargé`, 'success');
         setTimeout(() => {
             document.body.removeChild(iframe);
         }, 1000);
     };
     
     iframe.onerror = () => {
-        sendPs4Notification(`❌ Erreur lors du lancement`);
+        showNotification('❌ Erreur lors du chargement', 'error');
         document.body.removeChild(iframe);
     };
     
     document.body.appendChild(iframe);
+}
+
+// Sauvegarder la configuration PS4
+function savePs4Config() {
+    const ip = document.getElementById('ps4Ip').value.trim();
+    
+    if (!ip) {
+        showNotification('Veuillez entrer une adresse IP valide', 'error');
+        return;
+    }
+    
+    // Validation basique de l'IP
+    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (!ipPattern.test(ip)) {
+        showNotification('Format d\'adresse IP invalide', 'error');
+        return;
+    }
+    
+    ps4Ip = ip;
+    localStorage.setItem('ps4Ip', ip);
+    showNotification('Configuration sauvegardée!', 'success');
 }
 
 // Afficher une notification (site web + PS4 via GoldHen)

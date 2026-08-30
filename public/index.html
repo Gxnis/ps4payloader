@@ -15,19 +15,26 @@
 
         <div class="payloads-section">
             <h2>Payloads Disponibles</h2>
-            <div id="goldHenStatus" class="goldhen-status">
-                <!-- Statut GoldHen -->
-            </div>
             <div id="payloadsList" class="payloads-list">
                 <!-- Les payloads seront chargés ici -->
             </div>
         </div>
 
+        <div class="ps4-config">
+            <h2>Configuration PS4</h2>
+            <div class="config-row">
+                <label for="ps4Ip">Adresse IP de votre PS4:</label>
+                <input type="text" id="ps4Ip" placeholder="192.168.1.xxx" value="">
+            </div>
+            <button class="btn btn-secondary" onclick="savePs4Config()">Sauvegarder</button>
+        </div>
+
         <div class="info-section">
             <h2>Instructions</h2>
-            <p>Ce site permet de lancer des payloads directement depuis votre PS4. Sélectionnez un payload ci-dessous pour l'exécuter.</p>
+            <p>1. Configurez l'adresse IP de votre PS4 ci-dessus</p>
+            <p>2. Assurez-vous que GoldHen 2.4.18b est installé sur votre PS4 (FW 9.50)</p>
+            <p>3. Sélectionnez un payload et cliquez sur "Lancer"</p>
             <p style="margin-top: 15px; color: #00ff88;">✅ Compatible GoldHen 2.4.18b - Firmware 9.50</p>
-            <p style="color: #a0a0a0; font-size: 0.9em;">Les notifications apparaîtront sur votre PS4 via GoldHen</p>
         </div>
     </div>
 
