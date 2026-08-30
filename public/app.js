@@ -1,11 +1,9 @@
 // Variables globales
 let payloads = [];
-let ps4Ip = localStorage.getItem('ps4Ip') || '';
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     loadPayloads();
-    document.getElementById('ps4Ip').value = ps4Ip;
 });
 
 // Charger la liste des payloads
@@ -44,92 +42,26 @@ function displayPayloads() {
     `).join('');
 }
 
-// Lancer un payload sur PS4 via le serveur
-async function launchPayload(filename) {
-    if (!ps4Ip) {
-        showNotification('Veuillez configurer l\'adresse IP de votre PS4', 'error');
-        return;
-    }
-    
-    try {
-        showNotification(`Envoi de ${filename} vers ${ps4Ip}...`, 'info');
-        
-        const response = await fetch('/api/payloads/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                filename: filename,
-                ps4Ip: ps4Ip
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification(`✅ ${filename} envoyé avec succès!`, 'success');
-        } else {
-            throw new Error(result.error || 'Erreur lors de l\'envoi');
-        }
-        
-    } catch (error) {
-        console.log('Erreur:', error);
-        showNotification(`❌ Erreur: ${error.message}`, 'error');
-        
-        // Fallback: essayer via iframe
-        showNotification('Tentative méthode alternative...', 'info');
-        loadPayloadViaIframe(filename);
-    }
-}
-
-// Fallback: Charger payload via iframe
-function loadPayloadViaIframe(filename) {
+// Lancer un payload (méthode standard PS4)
+function launchPayload(filename) {
+    // Méthode standard: lien direct vers le fichier .bin
+    // Le navigateur PS4 télécharge et exécute automatiquement
     const payloadUrl = `/payloads/${encodeURIComponent(filename)}`;
     
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = payloadUrl;
+    // Créer un lien invisible et cliquer dessus
+    const link = document.createElement('a');
+    link.href = payloadUrl;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     
-    iframe.onload = () => {
-        showNotification(`✅ ${filename} chargé`, 'success');
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-        }, 1000);
-    };
-    
-    iframe.onerror = () => {
-        showNotification('❌ Erreur lors du chargement', 'error');
-        document.body.removeChild(iframe);
-    };
-    
-    document.body.appendChild(iframe);
+    showNotification(`🚀 ${filename} lancé!`, 'success');
 }
 
-// Sauvegarder la configuration PS4
-function savePs4Config() {
-    const ip = document.getElementById('ps4Ip').value.trim();
-    
-    if (!ip) {
-        showNotification('Veuillez entrer une adresse IP valide', 'error');
-        return;
-    }
-    
-    // Validation basique de l'IP
-    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (!ipPattern.test(ip)) {
-        showNotification('Format d\'adresse IP invalide', 'error');
-        return;
-    }
-    
-    ps4Ip = ip;
-    localStorage.setItem('ps4Ip', ip);
-    showNotification('Configuration sauvegardée!', 'success');
-}
-
-// Afficher une notification (site web + PS4 via GoldHen)
+// Afficher une notification
 function showNotification(message, type = 'info') {
-    // Notification du site web
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = `notification ${type} show`;
@@ -137,15 +69,6 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.classList.remove('show');
     }, 3000);
-    
-    // Notification PS4 via GoldHen si disponible
-    if (type === 'success') {
-        sendPs4Notification(`✅ ${message}`);
-    } else if (type === 'error') {
-        sendPs4Notification(`❌ ${message}`);
-    } else {
-        sendPs4Notification(message);
-    }
 }
 
 // Formater la taille en Ko/Mo

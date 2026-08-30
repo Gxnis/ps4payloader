@@ -1,11 +1,11 @@
 # PS4 Payload Loader
 
-Interface web pour lancer des payloads PS4 (.bin) vers votre PlayStation 4 via GoldHen.
+Interface web pour lancer des payloads PS4 (.bin) en un clic depuis votre PlayStation 4.
 
 ## 🎮 Fonctionnalités
 
 - ✅ Liste des payloads disponibles avec informations (taille, date)
-- ✅ Envoi de payloads vers votre PS4 via IP
+- ✅ Lancement en un clic depuis le navigateur PS4
 - ✅ Compatible GoldHen 2.4.18b - Firmware 9.50
 - ✅ Interface moderne et responsive
 - ✅ Aucune installation nécessaire - les payloads sont sur le site
@@ -45,12 +45,12 @@ git commit -m "PS4 Payload Loader - Site statique avec payloads"
    - Render détectera automatiquement la configuration (grâce à `render.yaml`)
    - Cliquez sur "Create Web Service"
 
-4. **Utiliser:**
+4. **Utiliser sur PS4:**
    - Une fois déployé, Render vous donnera une URL (ex: `https://votre-app.onrender.com`)
-   - Ouvrez le site dans n'importe quel navigateur (PC, mobile, ou PS4)
-   - Configurez l'adresse IP de votre PS4
-   - Sélectionnez un payload et cliquez sur "Lancer"
-   - Le payload sera envoyé à votre PS4 via GoldHen
+   - Sur votre PS4, ouvrez le navigateur internet
+   - Naviguez vers l'URL de votre site
+   - Cliquez simplement sur "Lancer" pour exécuter un payload
+   - Le payload sera téléchargé et exécuté automatiquement
 
 ## 📁 Structure du projet
 
@@ -78,12 +78,11 @@ Pour ajouter de nouveaux payloads :
 ## ⚠️ Notes importantes
 
 - Les payloads doivent être au format .bin
-- Le site peut être utilisé depuis n'importe quel navigateur
+- Le site doit être ouvert depuis le navigateur de votre PS4
 - Pour le déploiement, utilisez "Web Service" sur Render (pas Static Site)
-- Assurez-vous que votre PS4 et le serveur sont sur le même réseau
+- Assurez-vous que votre PS4 a une connexion internet active
 - Les payloads sont inclus dans le site - pas besoin de les installer localement
 - **Nécessite GoldHen 2.4.18b installé sur votre PS4 (FW 9.50)**
-- Le port 9020 doit être ouvert sur votre PS4 pour GoldHen
 
 ## 🛠️ Technologies
 

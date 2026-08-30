@@ -38,7 +38,6 @@ header p {
 }
 
 .payloads-section,
-.ps4-config,
 .info-section {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
@@ -68,26 +67,6 @@ h2 {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-    color: #fff;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-    color: #fff;
-}
-
-.btn-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
 }
 
 .btn-launch {
@@ -145,32 +124,6 @@ h2 {
 
 .payload-actions button {
     flex: 1;
-}
-
-.config-row {
-    margin-bottom: 20px;
-}
-
-.config-row label {
-    display: block;
-    margin-bottom: 8px;
-    color: #a0a0a0;
-}
-
-.config-row input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #00d4ff;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 1em;
-}
-
-.config-row input:focus {
-    outline: none;
-    border-color: #00ff88;
-    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
 }
 
 .notification {
