@@ -1,11 +1,13 @@
 # PS4 Payload Loader
 
-Interface web pour lancer des payloads PS4 (.bin) directement depuis le navigateur de votre PlayStation 4.
+Interface web pour lancer des payloads PS4 (.bin) directement depuis le navigateur de votre PlayStation 4 avec notifications custom via GoldHen.
 
 ## 🎮 Fonctionnalités
 
 - ✅ Liste des payloads disponibles avec informations (taille, date)
 - ✅ Lancement direct des payloads depuis le navigateur PS4
+- ✅ Notifications PS4 custom via GoldHen
+- ✅ Compatible GoldHen 2.4.18b - Firmware 9.50
 - ✅ Interface moderne et responsive
 - ✅ Aucune installation nécessaire - les payloads sont sur le site
 
@@ -81,6 +83,8 @@ Pour ajouter de nouveaux payloads :
 - Pour le déploiement, utilisez "Web Service" sur Render (pas Static Site)
 - Assurez-vous que votre PS4 a une connexion internet active
 - Les payloads sont inclus dans le site - pas besoin de les installer localement
+- **Nécessite GoldHen 2.4.18b installé sur votre PS4 (FW 9.50)**
+- Les notifications apparaîtront directement sur votre PS4 via GoldHen
 
 ## 🛠️ Technologies
 
