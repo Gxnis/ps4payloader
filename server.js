@@ -37,7 +37,7 @@ app.get('/api/payloads', (req, res) => {
   }
 });
 
-// Servir les fichiers payload directement
+// Servir les fichiers payload avec headers PS4 exploitation
 app.get('/payloads/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(PAYLOADS_DIR, filename);
@@ -45,6 +45,17 @@ app.get('/payloads/:filename', (req, res) => {
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: 'Fichier non trouvé' });
   }
+  
+  // Headers spécifiques pour PS4 exploitation (comme les vrais sites)
+  res.setHeader('Content-Type', 'application/octet-stream');
+  res.setHeader('Content-Disposition', 'inline'); // Pas attachment
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
   res.sendFile(filePath);
 });
